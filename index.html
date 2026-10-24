@@ -40,6 +40,21 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        main,
+        .site-footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        #universe-stars {
+            position: fixed;
+            z-index: 0;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
         body::selection {
             color: var(--black);
             background: var(--cyan);
@@ -191,7 +206,7 @@
 
         .hero::before {
             position: absolute;
-            z-index: -2;
+            z-index: -1;
             inset: 0;
             background:
                 radial-gradient(ellipse at 50% 48%, rgba(124, 58, 237, 0.18), transparent 37%),
@@ -201,7 +216,7 @@
 
         .hero-wordmark {
             position: absolute;
-            z-index: -1;
+            z-index: 0;
             top: 44%;
             right: var(--page-gutter);
             left: var(--page-gutter);
@@ -217,15 +232,6 @@
             white-space: nowrap;
         }
 
-        .hero-stars {
-            position: absolute;
-            z-index: -1;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
         .hero-kicker {
             position: absolute;
             top: 20%;
@@ -239,6 +245,7 @@
 
         .cube-stage {
             position: relative;
+            z-index: 1;
             display: grid;
             width: min(50vh, 62vw);
             height: min(50vh, 62vw);
@@ -488,7 +495,7 @@
             overflow: hidden;
             background:
                 radial-gradient(ellipse 55% 42% at 50% 36%, rgba(124, 58, 237, 0.24), transparent 100%),
-                #0b0216;
+                rgba(11, 2, 22, 0.84);
         }
 
         .pricing-section::before {
@@ -621,7 +628,7 @@
             padding: clamp(1.5rem, 5vw, 4rem);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 2rem;
-            background: #1a0b2e;
+            background: rgba(26, 11, 46, 0.78);
         }
 
         .calculator .eyebrow {
@@ -722,7 +729,7 @@
         .site-footer {
             overflow: hidden;
             padding: 6rem var(--page-gutter) 2rem;
-            background: var(--black);
+            background: rgba(5, 5, 5, 0.88);
         }
 
         .footer-top {
@@ -978,6 +985,7 @@
     </style>
 </head>
 <body>
+    <canvas id="universe-stars" aria-hidden="true"></canvas>
     <header class="site-nav">
         <a class="brand" href="#top" aria-label="Afterform home">
             <span class="live-dot" aria-hidden="true"></span>
@@ -994,7 +1002,6 @@
     <main>
         <section class="hero" id="top" aria-labelledby="hero-title">
             <p class="eyebrow hero-kicker"><span>Independent creative studio</span> / Est. 2018</p>
-            <canvas class="hero-stars" aria-hidden="true"></canvas>
             <h1 class="hero-wordmark" id="hero-title">AFTERFORM</h1>
             <div class="cube-stage" aria-label="A rotating showcase of studio work">
                 <div class="cube-wrapper">
@@ -1153,69 +1160,111 @@
         const estimateValue = document.getElementById("estimate-value");
         const year = document.getElementById("year");
         const heroWordmark = document.querySelector(".hero-wordmark");
-        const hero = document.querySelector(".hero");
-        const starCanvas = document.querySelector(".hero-stars");
+        const starCanvas = document.getElementById("universe-stars");
         const starContext = starCanvas.getContext("2d");
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
         let stars = [];
         let starFrame = 0;
-        let previousStarFrame = 0;
+        let previousStarFrame = null;
+        let starfieldWidth = 0;
+        let starfieldHeight = 0;
+        let starfieldTime = 0;
 
-        function drawStars(time = 0, delta = 0) {
-            const { width, height } = starCanvas;
-            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-            const cssWidth = width / pixelRatio;
-            const cssHeight = height / pixelRatio;
+        function createStar(index, width, height, previousStar) {
+            let seed = (index + 1) * 0x9e3779b1;
+            const random = () => {
+                seed = (seed ^ (seed << 13)) >>> 0;
+                seed = (seed ^ (seed >>> 17)) >>> 0;
+                seed = (seed ^ (seed << 5)) >>> 0;
+                return seed / 0x100000000;
+            };
+            const depth = random();
+            const color = random();
+            const tint = color < 0.16 ? [125, 170, 255] : color < 0.3 ? [190, 150, 255] : [225, 235, 255];
 
-            starContext.clearRect(0, 0, cssWidth, cssHeight);
+            return {
+                x: previousStar ? previousStar.x / starfieldWidth * width : random() * width,
+                y: previousStar ? previousStar.y / starfieldHeight * height : random() * height,
+                radius: 0.35 + depth * 0.9,
+                opacity: 0.2 + random() * 0.48,
+                phase: random() * Math.PI * 2,
+                twinkleSpeed: 0.35 + random() * 1.1,
+                driftX: (0.25 + random() * 1.2) * (random() < 0.5 ? -1 : 1),
+                driftY: (0.15 + random() * 0.8) * (random() < 0.5 ? -1 : 1),
+                tint
+            };
+        }
+
+        function drawUniverse(time = starfieldTime, delta = 0) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const phase = time * 0.00012;
+            const glowRadius = Math.max(width, height) * 0.48;
+            const glows = [
+                { x: width * (0.2 + Math.sin(phase) * 0.06), y: height * 0.3, radius: glowRadius, color: "74, 113, 255", alpha: 0.045 },
+                { x: width * (0.78 + Math.cos(phase * 0.7) * 0.05), y: height * 0.68, radius: glowRadius * 0.88, color: "151, 82, 230", alpha: 0.04 },
+                { x: width * 0.52, y: height * (0.46 + Math.sin(phase * 0.55) * 0.06), radius: glowRadius * 0.73, color: "87, 188, 255", alpha: 0.018 }
+            ];
+
+            starContext.clearRect(0, 0, width, height);
+            glows.forEach((glow) => {
+                const gradient = starContext.createRadialGradient(glow.x, glow.y, 0, glow.x, glow.y, glow.radius);
+                gradient.addColorStop(0, `rgba(${glow.color}, ${glow.alpha})`);
+                gradient.addColorStop(1, `rgba(${glow.color}, 0)`);
+                starContext.fillStyle = gradient;
+                starContext.fillRect(0, 0, width, height);
+            });
+
             stars.forEach((star) => {
-                star.x = (star.x + star.driftX * delta + cssWidth) % cssWidth;
-                star.y = (star.y + star.driftY * delta + cssHeight) % cssHeight;
+                star.x = (star.x + star.driftX * delta + width) % width;
+                star.y = (star.y + star.driftY * delta + height) % height;
 
-                const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.phase);
+                const twinkle = 0.55 + 0.45 * Math.sin(time * 0.001 * star.twinkleSpeed + star.phase);
+                const [red, green, blue] = star.tint;
                 starContext.beginPath();
                 starContext.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                starContext.fillStyle = `rgba(220, 235, 255, ${star.opacity * twinkle})`;
+                starContext.fillStyle = `rgba(${red}, ${green}, ${blue}, ${star.opacity * twinkle})`;
                 starContext.fill();
             });
         }
 
         function animateStars(time) {
-            const delta = Math.min(time - previousStarFrame, 40);
+            if (document.hidden || reducedMotion.matches) {
+                starFrame = 0;
+                previousStarFrame = null;
+                return;
+            }
+
+            const delta = previousStarFrame === null ? 0 : Math.min((time - previousStarFrame) / 1000, 0.05);
             previousStarFrame = time;
-            drawStars(time * 0.001, delta * 0.012);
+            starfieldTime += delta * 1000;
+            drawUniverse(starfieldTime, delta);
             starFrame = window.requestAnimationFrame(animateStars);
         }
 
         function resizeStarfield() {
-            const bounds = hero.getBoundingClientRect();
-            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-            starCanvas.width = Math.round(bounds.width * pixelRatio);
-            starCanvas.height = Math.round(bounds.height * pixelRatio);
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+            starCanvas.width = Math.round(width * pixelRatio);
+            starCanvas.height = Math.round(height * pixelRatio);
             starContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-            const count = Math.max(24, Math.min(110, Math.round(bounds.width * bounds.height / 14000)));
-            stars = Array.from({ length: count }, () => ({
-                x: Math.random() * bounds.width,
-                y: Math.random() * bounds.height,
-                radius: Math.random() * 1.1 + 0.25,
-                opacity: Math.random() * 0.35 + 0.15,
-                phase: Math.random() * Math.PI * 2,
-                twinkleSpeed: Math.random() * 1.2 + 0.4,
-                driftX: (Math.random() - 0.5) * 0.018,
-                driftY: (Math.random() - 0.5) * 0.018
-            }));
-
-            if (reducedMotion.matches) {
-                drawStars();
-            }
+            const count = Math.max(36, Math.min(120, Math.round(width * height / 15000)));
+            stars = Array.from({ length: count }, (_, index) =>
+                createStar(index, width, height, stars[index])
+            );
+            starfieldWidth = width;
+            starfieldHeight = height;
+            drawUniverse();
         }
 
         function updateStarAnimation() {
             window.cancelAnimationFrame(starFrame);
-            previousStarFrame = 0;
-            if (reducedMotion.matches) {
-                drawStars();
+            starFrame = 0;
+            previousStarFrame = null;
+            if (document.hidden || reducedMotion.matches) {
+                drawUniverse();
                 return;
             }
             starFrame = window.requestAnimationFrame(animateStars);
@@ -1239,6 +1288,7 @@
         teamSizeSlider.addEventListener("input", updateEstimate);
         window.addEventListener("scroll", updateHeroWordmark, { passive: true });
         window.addEventListener("resize", resizeStarfield, { passive: true });
+        document.addEventListener("visibilitychange", updateStarAnimation);
         reducedMotion.addEventListener("change", updateStarAnimation);
         resizeStarfield();
         updateStarAnimation();
