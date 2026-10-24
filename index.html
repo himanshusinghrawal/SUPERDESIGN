@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050505">
+    <meta name="description" content="A digital studio shaping what comes next. Strategy, identity, and digital experiences built to move culture forward.">
+    <title>AFTERFORM — Digital experiences for what comes next</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --black: #050505;
+            --surface: #111111;
+            --white: #ffffff;
+            --muted: #999999;
+            --line: rgba(255, 255, 255, 0.12);
+            --cyan: #06b6d4;
+            --pink: #ec4899;
+            --purple: #7c3aed;
+            --page-gutter: clamp(1.25rem, 5vw, 5rem);
+            --font: "Aspekta", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--black);
+        }
+
+        body {
+            margin: 0;
+            color: var(--white);
+            background: var(--black);
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::selection {
+            color: var(--black);
+            background: var(--cyan);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--cyan);
+            outline-offset: 5px;
+        }
+
+        .eyebrow,
+        .nav-links,
+        .button,
+        .project-meta,
+        .price-label,
+        .footer-meta,
+        .cube-face span {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: var(--muted);
+        }
+
+        .eyebrow::before {
+            width: 1.4rem;
+            height: 1px;
+            background: currentColor;
+            content: "";
+        }
+
+        .site-nav {
+            position: fixed;
+            z-index: 20;
+            inset: 0 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            padding: 1.4rem var(--page-gutter);
+            mix-blend-mode: difference;
+        }
+
+        .brand {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            gap: 0.65rem;
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 0.16em;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: clamp(1rem, 2.6vw, 2.6rem);
+            font-size: 0.61rem;
+        }
+
+        .nav-links a,
+        .text-link,
+        .footer-link {
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-links a:hover,
+        .text-link:hover,
+        .footer-link:hover {
+            opacity: 0.6;
+        }
+
+        .nav-action {
+            justify-self: end;
+        }
+
+        .button {
+            display: inline-flex;
+            min-height: 3.2rem;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+            padding: 0.9rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .button:hover {
+            transform: scale(1.02);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+
+        .button-primary {
+            border: 0;
+            color: var(--black);
+            background: linear-gradient(105deg, var(--cyan), var(--pink));
+        }
+
+        .button-primary:hover {
+            border: 0;
+        }
+
+        .hero {
+            position: relative;
+            display: flex;
+            min-height: max(760px, 100svh);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 8rem var(--page-gutter) 5rem;
+            perspective: 2000px;
+            isolation: isolate;
+        }
+
+        .hero::before {
+            position: absolute;
+            z-index: -2;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 48%, rgba(124, 58, 237, 0.18), transparent 37%),
+                radial-gradient(ellipse at 51% 70%, rgba(6, 182, 212, 0.08), transparent 44%);
+            content: "";
+        }
+
+        .hero-wordmark {
+            position: absolute;
+            z-index: -1;
+            top: 44%;
+            left: 50%;
+            width: max-content;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: clamp(7rem, 22vw, 24rem);
+            font-weight: 900;
+            letter-spacing: -0.105em;
+            line-height: 0.7;
+            transform: translate(-53%, -50%);
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .hero-kicker {
+            position: absolute;
+            top: 20%;
+            left: var(--page-gutter);
+            margin: 0;
+        }
+
+        .hero-kicker span {
+            color: var(--white);
+        }
+
+        .cube-stage {
+            position: relative;
+            display: grid;
+            width: min(50vh, 62vw);
+            height: min(50vh, 62vw);
+            min-width: 250px;
+            min-height: 250px;
+            place-items: center;
+            margin-top: 2.5rem;
+            transform-style: preserve-3d;
+        }
+
+        .cube-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rolodex 24s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            overflow: hidden;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #151515;
+            backface-visibility: hidden;
+        }
+
+        .cube-face::after {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.65));
+            content: "";
+        }
+
+        .cube-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+        }
+
+        .cube-face span {
+            position: absolute;
+            z-index: 1;
+            bottom: 1.4rem;
+            left: 1.4rem;
+            font-size: clamp(0.55rem, 1vw, 0.72rem);
+        }
+
+        .cube-front {
+            transform: rotateX(0deg) translateZ(min(25vh, 31vw));
+        }
+
+        .cube-bottom {
+            transform: rotateX(-90deg) translateZ(min(25vh, 31vw));
+        }
+
+        .cube-back {
+            transform: rotateX(-180deg) translateZ(min(25vh, 31vw));
+        }
+
+        .cube-top {
+            transform: rotateX(90deg) translateZ(min(25vh, 31vw));
+        }
+
+        .hero-bottom {
+            position: absolute;
+            right: var(--page-gutter);
+            bottom: 3rem;
+            left: var(--page-gutter);
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+        }
+
+        .hero-bottom p {
+            max-width: 20rem;
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .scroll-cue {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--muted);
+            font-size: 0.63rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .scroll-cue::after {
+            width: 3rem;
+            height: 1px;
+            background: var(--muted);
+            content: "";
+        }
+
+        .section {
+            padding: clamp(6rem, 12vw, 11rem) var(--page-gutter);
+        }
+
+        .work-section {
+            max-width: 112rem;
+            margin: 0 auto;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: clamp(2rem, 5vw, 4.5rem);
+        }
+
+        .section-heading h2,
+        .pricing-heading h2 {
+            margin: 0;
+            font-size: clamp(4.5rem, 10vw, 10rem);
+            font-weight: 900;
+            letter-spacing: -0.09em;
+            line-height: 0.78;
+            text-transform: uppercase;
+        }
+
+        .section-heading .eyebrow {
+            margin: 0 0 1.2rem;
+        }
+
+        .section-heading > p {
+            max-width: 17rem;
+            margin: 0 0 0.25rem;
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .project-card {
+            min-width: 0;
+        }
+
+        .project-card.featured {
+            grid-column: 1 / -1;
+        }
+
+        .project-image {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+            border: 1px solid var(--line);
+            background: #171717;
+        }
+
+        .featured .project-image {
+            aspect-ratio: 16 / 8;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+            transition: filter 0.65s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+
+        .project-card:hover .project-image img {
+            filter: grayscale(0);
+            transform: scale(1.035);
+        }
+
+        .window-controls {
+            position: absolute;
+            z-index: 1;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            gap: 0.35rem;
+            padding: 0.48rem 0.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            background: rgba(5, 5, 5, 0.4);
+            backdrop-filter: blur(8px);
+        }
+
+        .window-controls i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff5f57;
+        }
+
+        .window-controls i:nth-child(2) {
+            background: #febc2e;
+        }
+
+        .window-controls i:nth-child(3) {
+            background: #28c840;
+        }
+
+        .project-index {
+            position: absolute;
+            right: 1rem;
+            bottom: 1rem;
+            display: grid;
+            width: 2.5rem;
+            height: 2.5rem;
+            place-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            background: rgba(5, 5, 5, 0.24);
+            backdrop-filter: blur(8px);
+            font-size: 1rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .project-card:hover .project-index {
+            transform: rotate(-45deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.1rem 0 0;
+            font-size: 0.63rem;
+        }
+
+        .project-meta span:last-child {
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .pricing-section {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 55% 42% at 50% 36%, rgba(124, 58, 237, 0.24), transparent 100%),
+                #0b0216;
+        }
+
+        .pricing-section::before {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            width: 40rem;
+            height: 30rem;
+            border-radius: 50%;
+            background: rgba(124, 58, 237, 0.14);
+            content: "";
+            filter: blur(100px);
+            pointer-events: none;
+            transform: translateX(-50%);
+        }
+
+        .pricing-inner {
+            position: relative;
+            max-width: 90rem;
+            margin: 0 auto;
+        }
+
+        .pricing-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .pricing-heading .eyebrow {
+            margin: 0 0 1.2rem;
+        }
+
+        .pricing-heading p {
+            max-width: 18rem;
+            margin: 0 0 0.3rem;
+            color: #c4bacd;
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .price-card {
+            min-height: 27rem;
+            padding: clamp(1.5rem, 3vw, 2.4rem);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1.4rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .price-card.growth {
+            min-height: 29rem;
+            color: #111111;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: #ffffff;
+            transform: scale(1.04);
+        }
+
+        .price-label {
+            margin: 0 0 2.5rem;
+            color: var(--muted);
+        }
+
+        .growth .price-label {
+            color: #555555;
+        }
+
+        .price-card h3 {
+            margin: 0 0 0.8rem;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.07em;
+            text-transform: uppercase;
+        }
+
+        .price-card > p:not(.price-label) {
+            min-height: 3rem;
+            margin: 0;
+            color: #aaa0b1;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .growth > p:not(.price-label) {
+            color: #555555;
+        }
+
+        .price-amount {
+            margin: 2rem 0;
+            font-size: clamp(2rem, 3vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.08em;
+        }
+
+        .price-amount span {
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .growth .price-amount span {
+            color: #666666;
+        }
+
+        .price-card .button {
+            width: 100%;
+        }
+
+        .price-card.growth .button {
+            color: var(--white);
+            border-color: #111111;
+            background: #111111;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: 1fr minmax(17rem, 0.7fr);
+            align-items: center;
+            gap: clamp(2rem, 7vw, 7rem);
+            margin-top: 5rem;
+            padding: clamp(1.5rem, 5vw, 4rem);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            background: #1a0b2e;
+        }
+
+        .calculator .eyebrow {
+            margin: 0 0 1.2rem;
+        }
+
+        .calculator h3 {
+            max-width: 34rem;
+            margin: 0 0 0.8rem;
+            font-size: clamp(2.2rem, 5vw, 4.8rem);
+            font-weight: 900;
+            letter-spacing: -0.08em;
+            line-height: 0.95;
+            text-transform: uppercase;
+        }
+
+        .calculator-copy {
+            margin: 0;
+            color: #b6a9c5;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .slider-panel {
+            padding: clamp(1.25rem, 3vw, 2rem);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.2rem;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+        }
+
+        .slider-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.7rem;
+            color: #d8cee3;
+            font-size: 0.75rem;
+        }
+
+        .slider-heading output {
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .price-slider {
+            width: 100%;
+            height: 8px;
+            margin: 0;
+            border-radius: 999px;
+            outline: none;
+            background: #374151;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .price-slider::-webkit-slider-thumb {
+            width: 24px;
+            height: 24px;
+            border: 0;
+            border-radius: 50%;
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.5);
+            appearance: none;
+        }
+
+        .price-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border: 0;
+            border-radius: 50%;
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.5);
+        }
+
+        .estimate {
+            margin-top: 1.8rem;
+        }
+
+        .estimate .eyebrow {
+            margin: 0 0 0.4rem;
+        }
+
+        .estimate-value {
+            margin: 0;
+            font-size: clamp(2.7rem, 5vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -0.09em;
+            line-height: 1;
+        }
+
+        .estimate-note {
+            margin: 0.5rem 0 0;
+            color: #b6a9c5;
+            font-size: 0.7rem;
+        }
+
+        .site-footer {
+            overflow: hidden;
+            padding: 6rem var(--page-gutter) 2rem;
+            background: var(--black);
+        }
+
+        .footer-top {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        .footer-top .eyebrow {
+            margin: 0 0 1.5rem;
+        }
+
+        .footer-top h2 {
+            max-width: 64rem;
+            margin: 0;
+            font-size: clamp(4rem, 11vw, 11rem);
+            font-weight: 900;
+            letter-spacing: -0.1em;
+            line-height: 0.78;
+            text-transform: uppercase;
+        }
+
+        .footer-top h2 span {
+            color: var(--muted);
+        }
+
+        .footer-contact {
+            flex: 0 0 auto;
+            margin-top: 2rem;
+        }
+
+        .footer-contact .button {
+            white-space: nowrap;
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            color: var(--muted);
+            font-size: 0.58rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-socials a {
+            color: var(--muted);
+        }
+
+        @keyframes rolodex {
+            0%, 15% { transform: rotateX(0deg); }
+            25%, 40% { transform: rotateX(90deg); }
+            50%, 65% { transform: rotateX(180deg); }
+            75%, 90% { transform: rotateX(270deg); }
+            100% { transform: rotateX(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.35; }
+        }
+
+        @media (max-width: 800px) {
+            .site-nav {
+                grid-template-columns: 1fr auto;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                min-height: max(700px, 100svh);
+            }
+
+            .hero-kicker {
+                top: 17%;
+            }
+
+            .hero-bottom {
+                bottom: 2rem;
+            }
+
+            .section-heading,
+            .pricing-heading {
+                align-items: start;
+                flex-direction: column;
+            }
+
+            .section-heading > p,
+            .pricing-heading > p {
+                max-width: 25rem;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .price-card,
+            .price-card.growth {
+                min-height: 0;
+                transform: none;
+            }
+
+            .price-label {
+                margin-bottom: 1.8rem;
+            }
+
+            .price-card > p:not(.price-label) {
+                min-height: 0;
+            }
+
+            .calculator {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-top {
+                flex-direction: column;
+            }
+
+            .footer-contact {
+                margin-top: 0.5rem;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .site-nav {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+
+            .nav-action .button {
+                min-height: 2.6rem;
+                padding: 0.7rem 0.95rem;
+                font-size: 0.56rem;
+            }
+
+            .hero {
+                min-height: 720px;
+                min-height: 100svh;
+                padding-top: 7rem;
+            }
+
+            .hero-kicker {
+                top: 16%;
+            }
+
+            .cube-stage {
+                width: min(58vh, 76vw);
+                height: min(58vh, 76vw);
+                min-width: 230px;
+                min-height: 230px;
+                margin-top: 3rem;
+            }
+
+            .cube-front {
+                transform: rotateX(0deg) translateZ(min(29vh, 38vw));
+            }
+
+            .cube-bottom {
+                transform: rotateX(-90deg) translateZ(min(29vh, 38vw));
+            }
+
+            .cube-back {
+                transform: rotateX(-180deg) translateZ(min(29vh, 38vw));
+            }
+
+            .cube-top {
+                transform: rotateX(90deg) translateZ(min(29vh, 38vw));
+            }
+
+            .hero-bottom {
+                bottom: 1.5rem;
+            }
+
+            .hero-bottom p {
+                max-width: 15rem;
+                font-size: 0.75rem;
+            }
+
+            .scroll-cue {
+                display: none;
+            }
+
+            .section {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+            }
+
+            .section-heading h2,
+            .pricing-heading h2 {
+                font-size: clamp(4rem, 17vw, 6rem);
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .project-card.featured {
+                grid-column: auto;
+            }
+
+            .featured .project-image {
+                aspect-ratio: 4 / 3;
+            }
+
+            .project-meta {
+                font-size: 0.56rem;
+            }
+
+            .calculator {
+                padding: 1.4rem;
+                border-radius: 1.4rem;
+            }
+
+            .footer-bottom {
+                align-items: start;
+                flex-direction: column;
+            }
+
+            .footer-meta {
+                gap: 0.75rem 1rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-nav">
+        <a class="brand" href="#top" aria-label="Afterform home">
+            <span class="live-dot" aria-hidden="true"></span>
+            AFTERFORM
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#work">Work</a>
+            <a href="#studio">Studio</a>
+            <a href="#pricing">Services</a>
+        </nav>
+        <a class="button nav-action" href="#contact">Let's talk <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main>
+        <section class="hero" id="top" aria-labelledby="hero-title">
+            <p class="eyebrow hero-kicker"><span>Independent creative studio</span> / Est. 2018</p>
+            <h1 class="hero-wordmark" id="hero-title">AFTERFORM</h1>
+            <div class="cube-stage" aria-label="A rotating showcase of studio work">
+                <div class="cube-wrapper">
+                    <div class="cube-face cube-front">
+                        <img src="https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=1200&q=85" alt="Sculptural installation lit in vivid color">
+                        <span>01 / Culture</span>
+                    </div>
+                    <div class="cube-face cube-bottom">
+                        <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85" alt="" aria-hidden="true">
+                        <span>02 / Objects</span>
+                    </div>
+                    <div class="cube-face cube-back">
+                        <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="" aria-hidden="true">
+                        <span>03 / Digital</span>
+                    </div>
+                    <div class="cube-face cube-top">
+                        <img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85" alt="" aria-hidden="true">
+                        <span>04 / Future</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-bottom">
+                <p>We build the identities, platforms, and experiences that move culture forward.</p>
+                <a class="scroll-cue" href="#work">Scroll to explore</a>
+            </div>
+        </section>
+
+        <section class="section work-section" id="work" aria-labelledby="work-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Selected work / 2022—26</p>
+                    <h2 id="work-title">Made to<br>move.</h2>
+                </div>
+                <p>A few things we've put into the world with people who refuse to stand still.</p>
+            </div>
+
+            <div class="project-grid">
+                <article class="project-card featured">
+                    <a href="#contact" aria-label="Discuss the Aesop House project">
+                        <div class="project-image">
+                            <div class="window-controls" aria-hidden="true"><i></i><i></i><i></i></div>
+                            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85" alt="Warm, sculptural interior for Aesop House">
+                            <span class="project-index" aria-hidden="true">↗</span>
+                        </div>
+                    </a>
+                    <div class="project-meta"><span>Aesop House — A new ritual</span><span>Identity / Digital / 2025</span></div>
+                </article>
+
+                <article class="project-card">
+                    <a href="#contact" aria-label="Discuss the Nocturne project">
+                        <div class="project-image">
+                            <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85" alt="Dramatic night sky above a city">
+                            <span class="project-index" aria-hidden="true">↗</span>
+                        </div>
+                    </a>
+                    <div class="project-meta"><span>Nocturne — After hours</span><span>Campaign / 2025</span></div>
+                </article>
+
+                <article class="project-card">
+                    <a href="#contact" aria-label="Discuss the Forma project">
+                        <div class="project-image">
+                            <img src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85" alt="Minimal product design in a quiet studio">
+                            <span class="project-index" aria-hidden="true">↗</span>
+                        </div>
+                    </a>
+                    <div class="project-meta"><span>Forma — Objects for living</span><span>Strategy / Identity / 2024</span></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section pricing-section" id="pricing" aria-labelledby="pricing-title">
+            <div class="pricing-inner">
+                <div class="pricing-heading">
+                    <div>
+                        <p class="eyebrow">Good work, made together</p>
+                        <h2 id="pricing-title">Built for<br>what's next.</h2>
+                    </div>
+                    <p>Small, senior teams. No layers, no theatre. Just the right people for the right problem.</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <article class="price-card">
+                        <p class="price-label">01 / Starting point</p>
+                        <h3>Foundation</h3>
+                        <p>Clarity and a distinctive starting point for your next chapter.</p>
+                        <p class="price-amount">$8k <span>/ project</span></p>
+                        <a class="button" href="mailto:hello@afterform.studio?subject=Foundation%20inquiry">Explore foundation <span aria-hidden="true">↗</span></a>
+                    </article>
+
+                    <article class="price-card growth">
+                        <p class="price-label">02 / Most popular</p>
+                        <h3>Growth</h3>
+                        <p>A complete brand and digital experience, built to scale.</p>
+                        <p class="price-amount">$18k <span>/ project</span></p>
+                        <a class="button" href="mailto:hello@afterform.studio?subject=Growth%20inquiry">Build with us <span aria-hidden="true">↗</span></a>
+                    </article>
+
+                    <article class="price-card">
+                        <p class="price-label">03 / Ongoing</p>
+                        <h3>Partnership</h3>
+                        <p>Your creative team on call, built around your pace and ambition.</p>
+                        <p class="price-amount">$6k <span>/ month</span></p>
+                        <a class="button" href="mailto:hello@afterform.studio?subject=Partnership%20inquiry">Start a conversation <span aria-hidden="true">↗</span></a>
+                    </article>
+                </div>
+
+                <div class="calculator" id="studio">
+                    <div>
+                        <p class="eyebrow">A little less guesswork</p>
+                        <h3>Find your starting point.</h3>
+                        <p class="calculator-copy">Tell us how many people are building with you. Get a quick monthly estimate, then let's make it real.</p>
+                    </div>
+                    <div class="slider-panel">
+                        <div class="slider-heading">
+                            <label for="team-size">Your team size</label>
+                            <output id="team-size-output" for="team-size">12 people</output>
+                        </div>
+                        <input class="price-slider" type="range" id="team-size" name="team-size" min="1" max="40" value="12" aria-describedby="estimate-note">
+                        <div class="estimate" aria-live="polite">
+                            <p class="eyebrow">Estimated monthly investment</p>
+                            <p class="estimate-value" id="estimate-value">$1,500</p>
+                            <p class="estimate-note" id="estimate-note">A directional estimate at $125 per person.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+        <div class="footer-top">
+            <div>
+                <p class="eyebrow">Have a good one in mind?</p>
+                <h2>Let's make<br><span>some noise.</span></h2>
+            </div>
+            <div class="footer-contact">
+                <a class="button button-primary" href="mailto:hello@afterform.studio">Start a project <span aria-hidden="true">↗</span></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-meta">
+                <a class="brand" href="#top"><span class="live-dot" aria-hidden="true"></span> AFTERFORM</a>
+                <span>Independent by design.</span>
+                <span>© <span id="year"></span> Afterform Studio</span>
+            </div>
+            <nav class="footer-socials footer-meta" aria-label="Social links">
+                <a class="footer-link" href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram ↗</a>
+                <a class="footer-link" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script>
+        const teamSizeSlider = document.getElementById("team-size");
+        const teamSizeOutput = document.getElementById("team-size-output");
+        const estimateValue = document.getElementById("estimate-value");
+        const year = document.getElementById("year");
+        const heroWordmark = document.querySelector(".hero-wordmark");
+
+        function updateEstimate() {
+            const teamSize = Number(teamSizeSlider.value);
+            teamSizeOutput.value = `${teamSize} ${teamSize === 1 ? "person" : "people"}`;
+            estimateValue.textContent = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+                maximumFractionDigits: 0
+            }).format(teamSize * 125);
+        }
+
+        function updateHeroWordmark() {
+            const fade = Math.min(window.scrollY / window.innerHeight, 1);
+            heroWordmark.style.color = `rgba(255, 255, 255, ${0.3 - fade * 0.22})`;
+        }
+
+        teamSizeSlider.addEventListener("input", updateEstimate);
+        window.addEventListener("scroll", updateHeroWordmark, { passive: true });
+        updateEstimate();
+        updateHeroWordmark();
+        year.textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
