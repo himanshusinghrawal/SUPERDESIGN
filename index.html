@@ -203,17 +203,27 @@
             position: absolute;
             z-index: -1;
             top: 44%;
-            left: 50%;
-            width: max-content;
+            right: var(--page-gutter);
+            left: var(--page-gutter);
             margin: 0;
             color: rgba(255, 255, 255, 0.3);
-            font-size: clamp(7rem, 22vw, 24rem);
+            font-size: clamp(2rem, 12.5vw, 14rem);
             font-weight: 900;
-            letter-spacing: -0.105em;
+            letter-spacing: -0.08em;
             line-height: 0.7;
-            transform: translate(-53%, -50%);
+            text-align: center;
+            transform: translateY(-50%);
             user-select: none;
             white-space: nowrap;
+        }
+
+        .hero-stars {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
 
         .hero-kicker {
@@ -984,6 +994,7 @@
     <main>
         <section class="hero" id="top" aria-labelledby="hero-title">
             <p class="eyebrow hero-kicker"><span>Independent creative studio</span> / Est. 2018</p>
+            <canvas class="hero-stars" aria-hidden="true"></canvas>
             <h1 class="hero-wordmark" id="hero-title">AFTERFORM</h1>
             <div class="cube-stage" aria-label="A rotating showcase of studio work">
                 <div class="cube-wrapper">
@@ -1142,6 +1153,73 @@
         const estimateValue = document.getElementById("estimate-value");
         const year = document.getElementById("year");
         const heroWordmark = document.querySelector(".hero-wordmark");
+        const hero = document.querySelector(".hero");
+        const starCanvas = document.querySelector(".hero-stars");
+        const starContext = starCanvas.getContext("2d");
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let stars = [];
+        let starFrame = 0;
+        let previousStarFrame = 0;
+
+        function drawStars(time = 0, delta = 0) {
+            const { width, height } = starCanvas;
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            const cssWidth = width / pixelRatio;
+            const cssHeight = height / pixelRatio;
+
+            starContext.clearRect(0, 0, cssWidth, cssHeight);
+            stars.forEach((star) => {
+                star.x = (star.x + star.driftX * delta + cssWidth) % cssWidth;
+                star.y = (star.y + star.driftY * delta + cssHeight) % cssHeight;
+
+                const twinkle = 0.55 + 0.45 * Math.sin(time * star.twinkleSpeed + star.phase);
+                starContext.beginPath();
+                starContext.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                starContext.fillStyle = `rgba(220, 235, 255, ${star.opacity * twinkle})`;
+                starContext.fill();
+            });
+        }
+
+        function animateStars(time) {
+            const delta = Math.min(time - previousStarFrame, 40);
+            previousStarFrame = time;
+            drawStars(time * 0.001, delta * 0.012);
+            starFrame = window.requestAnimationFrame(animateStars);
+        }
+
+        function resizeStarfield() {
+            const bounds = hero.getBoundingClientRect();
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            starCanvas.width = Math.round(bounds.width * pixelRatio);
+            starCanvas.height = Math.round(bounds.height * pixelRatio);
+            starContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+            const count = Math.max(24, Math.min(110, Math.round(bounds.width * bounds.height / 14000)));
+            stars = Array.from({ length: count }, () => ({
+                x: Math.random() * bounds.width,
+                y: Math.random() * bounds.height,
+                radius: Math.random() * 1.1 + 0.25,
+                opacity: Math.random() * 0.35 + 0.15,
+                phase: Math.random() * Math.PI * 2,
+                twinkleSpeed: Math.random() * 1.2 + 0.4,
+                driftX: (Math.random() - 0.5) * 0.018,
+                driftY: (Math.random() - 0.5) * 0.018
+            }));
+
+            if (reducedMotion.matches) {
+                drawStars();
+            }
+        }
+
+        function updateStarAnimation() {
+            window.cancelAnimationFrame(starFrame);
+            previousStarFrame = 0;
+            if (reducedMotion.matches) {
+                drawStars();
+                return;
+            }
+            starFrame = window.requestAnimationFrame(animateStars);
+        }
 
         function updateEstimate() {
             const teamSize = Number(teamSizeSlider.value);
@@ -1160,6 +1238,10 @@
 
         teamSizeSlider.addEventListener("input", updateEstimate);
         window.addEventListener("scroll", updateHeroWordmark, { passive: true });
+        window.addEventListener("resize", resizeStarfield, { passive: true });
+        reducedMotion.addEventListener("change", updateStarAnimation);
+        resizeStarfield();
+        updateStarAnimation();
         updateEstimate();
         updateHeroWordmark();
         year.textContent = new Date().getFullYear();
